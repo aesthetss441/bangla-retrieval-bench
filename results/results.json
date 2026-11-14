@@ -1,0 +1,285 @@
+{
+ "dataset": "TyDi QA GoldP, Bengali",
+ "n_passages": 1870,
+ "n_queries": 2503,
+ "environment": "x86_64, Python 3.12.16",
+ "systems": [
+  {
+   "system": "bge-m3",
+   "kind": "dense",
+   "model": "BAAI/bge-m3",
+   "label": "bge-m3 (dense)",
+   "dimensions": 1024,
+   "parameters_millions": 568,
+   "index_seconds": 1055.18,
+   "query_ms": 55.782,
+   "recall@1": 0.7447063523771474,
+   "recall@5": 0.9524570515381542,
+   "recall@10": 0.9744306831801838,
+   "mrr@10": 0.8366002067360436,
+   "mrr@10_ci95": [
+    0.8246419059033921,
+    0.847903202664739
+   ],
+   "ndcg@10": 0.871005211484671
+  },
+  {
+   "system": "hybrid:bge-m3",
+   "kind": "hybrid",
+   "label": "bge-m3 (dense) + BM25, character 3-grams (RRF)",
+   "query_ms": 56.03,
+   "index_seconds": 1055.97,
+   "recall@1": 0.6652017578905314,
+   "recall@5": 0.9224930083899321,
+   "recall@10": 0.9524570515381542,
+   "mrr@10": 0.7790012302697081,
+   "mrr@10_ci95": [
+    0.7657007582963935,
+    0.7921475697417069
+   ],
+   "ndcg@10": 0.8222049109230397
+  },
+  {
+   "system": "e5-base",
+   "kind": "dense",
+   "model": "intfloat/multilingual-e5-base",
+   "query_prefix": "query: ",
+   "passage_prefix": "passage: ",
+   "label": "multilingual-e5-base",
+   "dimensions": 768,
+   "parameters_millions": 278,
+   "index_seconds": 406.13,
+   "query_ms": 22.586,
+   "recall@1": 0.6568118258090292,
+   "recall@5": 0.9252896524170995,
+   "recall@10": 0.9512584898122254,
+   "mrr@10": 0.771873910038113,
+   "mrr@10_ci95": [
+    0.757975802053409,
+    0.7850997255674144
+   ],
+   "ndcg@10": 0.8165931270417321
+  },
+  {
+   "system": "e5-small",
+   "kind": "dense",
+   "model": "intfloat/multilingual-e5-small",
+   "query_prefix": "query: ",
+   "passage_prefix": "passage: ",
+   "label": "multilingual-e5-small",
+   "dimensions": 384,
+   "parameters_millions": 118,
+   "index_seconds": 137.98,
+   "query_ms": 7.345,
+   "recall@1": 0.6556132640831003,
+   "recall@5": 0.9184978026368358,
+   "recall@10": 0.9532560926887734,
+   "mrr@10": 0.7697315602229704,
+   "mrr@10_ci95": [
+    0.7559890987957308,
+    0.7821721394643887
+   ],
+   "ndcg@10": 0.8152596883086989
+  },
+  {
+   "system": "e5-small-noprefix",
+   "kind": "dense",
+   "model": "intfloat/multilingual-e5-small",
+   "label": "multilingual-e5-small, prefixes omitted",
+   "dimensions": 384,
+   "parameters_millions": 118,
+   "index_seconds": 135.72,
+   "query_ms": 6.496,
+   "recall@1": 0.6544147023571714,
+   "recall@5": 0.9208949260886936,
+   "recall@10": 0.951658010387535,
+   "mrr@10": 0.7695804716879426,
+   "mrr@10_ci95": [
+    0.7554387433492508,
+    0.7819310042235033
+   ],
+   "ndcg@10": 0.8148484541854037
+  },
+  {
+   "system": "hybrid:e5-small-noprefix",
+   "kind": "hybrid",
+   "label": "multilingual-e5-small, prefixes omitted + BM25, character 3-grams (RRF)",
+   "query_ms": 6.744,
+   "index_seconds": 136.51,
+   "recall@1": 0.6356372353176188,
+   "recall@5": 0.9073112265281662,
+   "recall@10": 0.9468637634838194,
+   "mrr@10": 0.7549829093976117,
+   "mrr@10_ci95": [
+    0.7409496302849279,
+    0.768364985826532
+   ],
+   "ndcg@10": 0.8025246709656245
+  },
+  {
+   "system": "hybrid:e5-base",
+   "kind": "hybrid",
+   "label": "multilingual-e5-base + BM25, character 3-grams (RRF)",
+   "query_ms": 22.834,
+   "index_seconds": 406.92,
+   "recall@1": 0.6364362764682381,
+   "recall@5": 0.9097083499800239,
+   "recall@10": 0.9452656811825809,
+   "mrr@10": 0.7550545694373102,
+   "mrr@10_ci95": [
+    0.7407161168502558,
+    0.7681263396622465
+   ],
+   "ndcg@10": 0.802260186400336
+  },
+  {
+   "system": "hybrid:e5-small",
+   "kind": "hybrid",
+   "label": "multilingual-e5-small + BM25, character 3-grams (RRF)",
+   "query_ms": 7.593,
+   "index_seconds": 138.77,
+   "recall@1": 0.6340391530163804,
+   "recall@5": 0.9085097882540951,
+   "recall@10": 0.944067119456652,
+   "mrr@10": 0.7542212836659501,
+   "mrr@10_ci95": [
+    0.7406540643291541,
+    0.7672395625249699
+   ],
+   "ndcg@10": 0.8013867146860602
+  },
+  {
+   "system": "bm25-char3",
+   "kind": "bm25",
+   "tokenizer": "char3",
+   "label": "BM25, character 3-grams",
+   "vocabulary": 20437,
+   "index_seconds": 0.79,
+   "query_ms": 0.248,
+   "recall@1": 0.5625249700359568,
+   "recall@5": 0.8469836196564123,
+   "recall@10": 0.9073112265281662,
+   "mrr@10": 0.6845496515292758,
+   "mrr@10_ci95": [
+    0.6692198845512369,
+    0.6986350625281407
+   ],
+   "ndcg@10": 0.7389940966698351
+  },
+  {
+   "system": "hybrid:labse",
+   "kind": "hybrid",
+   "label": "LaBSE + BM25, character 3-grams (RRF)",
+   "query_ms": 22.203,
+   "index_seconds": 438.37,
+   "recall@1": 0.5153815421494207,
+   "recall@5": 0.7990411506192568,
+   "recall@10": 0.87095485417499,
+   "mrr@10": 0.6401638668518413,
+   "mrr@10_ci95": [
+    0.6239542984926025,
+    0.6568704023425859
+   ],
+   "ndcg@10": 0.696408297072142
+  },
+  {
+   "system": "bm25-bangla",
+   "kind": "bm25",
+   "tokenizer": "bangla",
+   "label": "BM25, Bangla-aware tokenizer",
+   "vocabulary": 31613,
+   "index_seconds": 0.4,
+   "query_ms": 0.086,
+   "recall@1": 0.47143427886536154,
+   "recall@5": 0.7283260087894526,
+   "recall@10": 0.7934478625649221,
+   "mrr@10": 0.5819407187565397,
+   "mrr@10_ci95": [
+    0.5648598348648288,
+    0.5979151486470203
+   ],
+   "ndcg@10": 0.6333647842929041
+  },
+  {
+   "system": "labse",
+   "kind": "dense",
+   "model": "sentence-transformers/LaBSE",
+   "label": "LaBSE",
+   "dimensions": 768,
+   "parameters_millions": 472,
+   "index_seconds": 437.58,
+   "query_ms": 21.955,
+   "recall@1": 0.37674790251697965,
+   "recall@5": 0.6456252497003596,
+   "recall@10": 0.7335197762684779,
+   "mrr@10": 0.4884968196893887,
+   "mrr@10_ci95": [
+    0.4722060551148146,
+    0.5058009277755581
+   ],
+   "ndcg@10": 0.5472695452095234
+  },
+  {
+   "system": "bm25-naive",
+   "kind": "bm25",
+   "tokenizer": "naive",
+   "label": "BM25, \\w+ tokenizer",
+   "vocabulary": 6919,
+   "index_seconds": 0.21,
+   "query_ms": 0.186,
+   "recall@1": 0.33919296843787455,
+   "recall@5": 0.578505793048342,
+   "recall@10": 0.6576108669596484,
+   "mrr@10": 0.44124542612357237,
+   "mrr@10_ci95": [
+    0.42452297322577986,
+    0.4573570207814115
+   ],
+   "ndcg@10": 0.49322643702435526
+  },
+  {
+   "system": "hybrid:minilm",
+   "kind": "hybrid",
+   "label": "paraphrase-multilingual-MiniLM-L12-v2 + BM25, character 3-grams (RRF)",
+   "query_ms": 4.694,
+   "index_seconds": 90.98,
+   "recall@1": 0.13104274870155813,
+   "recall@5": 0.39472632840591293,
+   "recall@10": 0.6703955253695565,
+   "mrr@10": 0.25125468485436525,
+   "mrr@10_ci95": [
+    0.23926284490357605,
+    0.263736833260405
+   ],
+   "ndcg@10": 0.34761285123283564
+  },
+  {
+   "system": "minilm",
+   "kind": "dense",
+   "model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+   "label": "paraphrase-multilingual-MiniLM-L12-v2",
+   "dimensions": 384,
+   "parameters_millions": 118,
+   "index_seconds": 90.19,
+   "query_ms": 4.446,
+   "recall@1": 0.025169796244506593,
+   "recall@5": 0.06432281262485018,
+   "recall@10": 0.08669596484218937,
+   "mrr@10": 0.042196348508773594,
+   "mrr@10_ci95": [
+    0.035663739227213054,
+    0.04901533635827483
+   ],
+   "ndcg@10": 0.052675947059363605
+  }
+ ],
+ "analysis": {
+  "missed_by_every_system@10": 16,
+  "best_dense": "bge-m3",
+  "best_sparse": "bm25-char3",
+  "dense_only@10": 194,
+  "sparse_only@10": 26,
+  "both@10": 2245,
+  "neither@10": 38
+ }
+}
