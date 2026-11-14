@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bangla Retrieval Benchmark</title>
+<style>
+  :root { --bg:#fbfaf7; --fg:#1c1b19; --muted:#6b675f; --line:#e2ded5; --accent:#0f6b4f; --bar:#cfe6dc; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151614; --fg:#ecebe6; --muted:#a09c92; --line:#2e302c; --accent:#6fd0a8; --bar:#1f4638; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.55 system-ui, "Segoe UI", sans-serif; }
+  main { max-width: 980px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { font-size: 1.9rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+  p.lead { color: var(--muted); margin: 0 0 24px; max-width: 70ch; }
+  .wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; min-width: 720px; }
+  th, td { padding: 9px 12px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; white-space: normal; }
+  th { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); cursor: pointer; user-select: none; }
+  th[aria-sort] { color: var(--accent); }
+  tr:last-child td { border-bottom: 0; }
+  td.score { background: linear-gradient(to right, var(--bar) var(--w), transparent var(--w)); }
+  .kind { font-size: .72rem; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; margin-left: 6px; }
+  h2 { font-size: 1.1rem; margin: 32px 0 8px; }
+  ul { margin: 0; padding-left: 20px; } li { margin: 4px 0; }
+  a { color: var(--accent); }
+  footer { margin-top: 32px; color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Bangla Retrieval Benchmark</h1>
+  <p class="lead" id="lead">Loading results…</p>
+  <div class="wrap"><table id="board"><thead></thead><tbody></tbody></table></div>
+  <h2>Failure analysis</h2>
+  <ul id="analysis"></ul>
+  <footer>Numbers are produced and committed by a GitHub Actions run, not by hand. Method, limits and code:
+    <a href="https://github.com/aesthetss441/bangla-retrieval-bench">github.com/aesthetss441/bangla-retrieval-bench</a>. Click a column to sort.</footer>
+</main>
+<script>
+const COLS = [["label","Retriever"],["ndcg@10","nDCG@10"],["mrr@10","MRR@10"],["recall@1","R@1"],["recall@5","R@5"],["recall@10","R@10"],["query_ms","ms / query"]];
+let rows = [], sortKey = "ndcg@10", desc = true;
+const el = (tag, text) => { const e = document.createElement(tag); if (text !== undefined) e.textContent = text; return e; };
+function render() {
+  const head = document.querySelector("#board thead"), body = document.querySelector("#board tbody");
+  head.replaceChildren(); body.replaceChildren();
+  const tr = el("tr");
+  for (const [key, title] of COLS) {
+    const th = el("th", title + (key === sortKey ? (desc ? " ↓" : " ↑") : ""));
+    if (key === sortKey) th.setAttribute("aria-sort", desc ? "descending" : "ascending");
+    th.onclick = () => { desc = key === sortKey ? !desc : key !== "label" && key !== "query_ms"; sortKey = key; render(); };
+    tr.append(th);
+  }
+  head.append(tr);
+  const sorted = [...rows].sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1) * (desc ? -1 : 1));
+  for (const r of sorted) {
+    const row = el("tr");
+    for (const [key] of COLS) {
+      const td = el("td");
+      if (key === "label") { td.textContent = r.label; td.append(Object.assign(el("span", r.kind), { className: "kind" })); }
+      else if (key === "query_ms") td.textContent = r[key].toFixed(1);
+      else { td.textContent = r[key].toFixed(3); td.className = "score"; td.style.setProperty("--w", (r[key] * 100).toFixed(1) + "%"); }
+      row.append(td);
+    }
+    body.append(row);
+  }
+}
+fetch("data.json").then(r => r.json()).then(d => {
+  rows = d.systems;
+  document.getElementById("lead").textContent = `Which retriever should a Bangla RAG system use? ${d.n_queries.toLocaleString()} native-speaker questions over ${d.n_passages.toLocaleString()} Wikipedia passages (${d.dataset}), one relevant passage each. Measured on ${d.environment}.`;
+  const a = d.analysis, list = document.getElementById("analysis");
+  list.append(el("li", `${a["missed_by_every_system@10"]} questions were not answered in the top 10 by any system.`));
+  if (a.best_dense) list.append(el("li", `Best dense (${a.best_dense}) vs best lexical (${a.best_sparse}) at top 10: both ${a["both@10"]}, dense only ${a["dense_only@10"]}, lexical only ${a["sparse_only@10"]}, neither ${a["neither@10"]}.`));
+  render();
+}).catch(() => { document.getElementById("lead").textContent = "Results have not been published yet."; });
+</script>
+</body>
+</html>

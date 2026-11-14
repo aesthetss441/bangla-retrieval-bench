@@ -1,0 +1,48 @@
+name: Benchmark
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        systems: ["bm25-naive,bm25-bangla,bm25-char3", "minilm", "labse", "e5-small,e5-small-noprefix", "e5-base", "bge-m3"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -e ".[dense,data]"
+      - run: brb run --systems "${{ matrix.systems }}" --out runs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: runs-${{ strategy.job-index }}
+          path: runs/*.json
+  report:
+    needs: run
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          path: runs
+          pattern: runs-*
+          merge-multiple: true
+      - run: pip install -e .
+      - run: brb report --runs runs --out results --docs docs
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results docs/data.json
+          git diff --cached --quiet || git commit -m "Benchmark results from run ${{ github.run_id }}"
+          git push
